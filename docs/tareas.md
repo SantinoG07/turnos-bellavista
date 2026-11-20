@@ -74,10 +74,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T09 — Frontend base y autenticación
 
-- [ ] Vite + React + TS, router, layout y estilos.
-- [ ] Cliente HTTP con token, manejo de errores y sesión.
-- [ ] Pantallas de login/registro y contexto de auth.
-- [ ] Tests de formularios, token y rutas protegidas.
+- [x] Vite + React + TS, router, layout y estilos.
+- [x] Cliente HTTP con token, manejo de errores y sesión.
+- [x] Pantallas de login/registro y contexto de auth.
+- [x] Tests de formularios, token y rutas protegidas.
 - Commit: `T09: frontend base, login y registro`
 
 ## T10 — Flujo de reserva
