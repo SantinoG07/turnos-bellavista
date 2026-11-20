@@ -90,10 +90,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T11 — Mis turnos
 
-- [ ] Listado próximo/pasado, detalle y estados.
-- [ ] Cancelación con confirmación y motivo.
-- [ ] Reprogramación con selección de nuevo horario.
-- [ ] Tests de cancelación, reprogramación y mensajes.
+- [x] Listado próximo/pasado, detalle y estados.
+- [x] Cancelación con confirmación y motivo.
+- [x] Reprogramación con selección de nuevo horario.
+- [x] Tests de cancelación, reprogramación y mensajes.
 - Commit: `T11: pantalla de mis turnos con cancelación y reprogramación`
 
 ## T12 — Panel de administración
