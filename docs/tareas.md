@@ -82,10 +82,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T10 — Flujo de reserva
 
-- [ ] Selección de servicio, profesional, fecha y horario.
-- [ ] Confirmación con resumen, notas y estados de carga/error.
-- [ ] Manejo de slots que se ocupan mientras se navega.
-- [ ] Tests del flujo completo y de errores de disponibilidad.
+- [x] Selección de servicio, profesional, fecha y horario.
+- [x] Confirmación con resumen, notas y estados de carga/error.
+- [x] Manejo de slots que se ocupan mientras se navega.
+- [x] Tests del flujo completo y de errores de disponibilidad.
 - Commit: `T10: flujo de reserva de turnos en React`
 
 ## T11 — Mis turnos
