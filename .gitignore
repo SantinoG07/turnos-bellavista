@@ -1,0 +1,32 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+!.env.test.example
+*.pem
+*.key
+
+# Bases locales / datos
+*.sqlite
+*.db
+.pgdata/
+data/
+
+# Logs y temporales
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+tmp/
+.tmp/
