@@ -23,11 +23,11 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T03 — Esqueleto del backend
 
-- [ ] Configuración por entorno y validación de variables.
-- [ ] Fábrica de base de datos (`pg` y PGlite) y transacciones.
-- [ ] App Express 5, healthcheck, manejo central de errores y CORS.
-- [ ] Repositorios base y utilidades de fecha/dinero.
-- [ ] Tests de healthcheck y errores.
+- [x] Configuración por entorno y validación de variables.
+- [x] Fábrica de base de datos (`pg` y PGlite) y transacciones.
+- [x] App Express 5, healthcheck, manejo central de errores y CORS.
+- [x] Repositorios base y utilidades de fecha/dinero.
+- [x] Tests de healthcheck y errores.
 - Commit: `T03: esqueleto Express, configuración y acceso a datos`
 
 ## T04 — Autenticación y seguridad
