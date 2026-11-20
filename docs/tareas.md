@@ -41,10 +41,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T05 — Catálogo y disponibilidad
 
-- [ ] Endpoints de servicios y profesionales.
-- [ ] Validaciones de catálogo RN-09/10/11.
-- [ ] Motor de disponibilidad RN-13 a RN-21 con Luxon.
-- [ ] Endpoint de slots y tests de huecos, pausas, bloqueos y anticipación.
+- [x] Endpoints de servicios y profesionales.
+- [x] Validaciones de catálogo RN-09/10/11.
+- [x] Motor de disponibilidad RN-13 a RN-21 con Luxon.
+- [x] Endpoint de slots y tests de huecos, pausas, bloqueos y anticipación.
 - Commit: `T05: catálogo y cálculo de disponibilidad`
 
 ## T06 — Reserva de turnos
