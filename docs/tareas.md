@@ -14,11 +14,11 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T02 — Esquema, migraciones y datos demo
 
-- [ ] Migración `001_init.sql` con todas las tablas, checks e índices.
-- [ ] Runner de migraciones para PostgreSQL y PGlite.
-- [ ] Seed idempotente: admin, servicios, profesionales, horarios.
-- [ ] Scripts `migrate` y `seed`.
-- [ ] Tests del esquema (restricciones y seed).
+- [x] Migración `001_init.sql` con todas las tablas, checks e índices.
+- [x] Runner de migraciones para PostgreSQL y PGlite.
+- [x] Seed idempotente: admin, servicios, profesionales, horarios.
+- [x] Scripts `migrate` y `seed`.
+- [x] Tests del esquema (restricciones y seed).
 - Commit: `T02: esquema PostgreSQL, migraciones y seed`
 
 ## T03 — Esqueleto del backend
