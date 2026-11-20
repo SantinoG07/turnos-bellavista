@@ -1,31 +1,64 @@
 # Turnos Bellavista
 
-Sistema de turnos para una barbería. Proyecto propio de la **Generación T**.
+Aplicación web de reservas para una barbería de Buenos Aires, creada como proyecto final de Generación T. Resuelve disponibilidad real por profesional, evita superposiciones, permite gestionar cambios y ofrece una agenda administrativa.
 
-> Estado: en construcción. La documentación definitiva y los enlaces públicos se completan
-> en T15.
+## Estado de entrega
 
-## Stack
+La aplicación, sus migraciones, documentación y pruebas están incluidas en este repositorio. La configuración para Netlify, Render y Neon está lista. Las URLs públicas no se publican hasta que el dueño conecte sus cuentas y cargue sus variables; ver [guía de despliegue](docs/guia-de-despliegue.md).
 
-- Frontend: React + Vite + TypeScript.
-- Backend: Node.js 22 + Express 5 + TypeScript.
-- Base de datos: PostgreSQL (Neon en producción).
-- Tests: Vitest, Supertest, React Testing Library y Playwright.
+## Reglas de negocio destacadas
 
-## Documentación
+- Horarios semanales, grilla de 15 minutos, pausas y bloqueos excepcionales.
+- Sin doble reserva para profesional ni cliente, incluso ante concurrencia.
+- Reserva entre 2 horas y 60 días de anticipación; máximo 3 turnos futuros.
+- Cancelación/reprogramación hasta 2 horas antes; máximo 2 reprogramaciones.
+- Tres ausencias en 180 días bloquean nuevas reservas durante 30 días.
 
-- [Especificación y 34 reglas](docs/spec.md)
-- [Plan](docs/plan.md)
-- [Tareas](docs/tareas.md)
-- [AGENTS.md](AGENTS.md)
+La especificación completa tiene 34 reglas numeradas en [docs/spec.md](docs/spec.md).
 
-## Cómo correr
+## Arquitectura y stack
+
+```text
+React + Vite (Netlify) → Express 5 + TypeScript (Render) → PostgreSQL (Neon)
+                                  │
+                    services → repositories → SQL parametrizado
+```
+
+- Frontend: React 19, Vite, TypeScript y React Router.
+- Backend: Node.js >= 22.12, Express 5, Zod, JWT y scrypt.
+- Datos: PostgreSQL en producción; PGlite para desarrollo y pruebas.
+- Calidad: Vitest, Supertest, React Testing Library y Playwright.
+
+## Ejecutar localmente
 
 ```bash
 npm install
+cp .env.example .env
 npm run migrate
 npm run seed
 npm run dev
 ```
 
-Con `DATABASE_URL` vacío se usa PGlite local. Ver `.env.example` para PostgreSQL real.
+El frontend abre en `http://localhost:5173` y la API en `http://localhost:3000`. Sin `DATABASE_URL`, el backend usa PGlite. Nunca subir `.env`.
+
+## Calidad
+
+```bash
+npm run typecheck
+npm test
+npm run test:e2e
+npm run build
+```
+
+Resultado de cierre: 86 pruebas backend, 81 frontend y 3 flujos Playwright con 44 comprobaciones de navegador. Ver [informe de pruebas](docs/informe-de-pruebas.md).
+
+## Documentación
+
+- [Especificación funcional y API](docs/spec.md)
+- [Plan y Definition of Done](docs/plan.md)
+- [Tareas y commits](docs/tareas.md)
+- [Relevamiento](docs/relevamiento.md)
+- [Manual de usuario](docs/manual-de-usuario.md)
+- [Manual técnico](docs/manual-tecnico.md)
+- [Guía de despliegue](docs/guia-de-despliegue.md)
+- [Instrucciones para colaboradores/agentes](AGENTS.md)

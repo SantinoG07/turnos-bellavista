@@ -98,32 +98,32 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T12 — Panel de administración
 
-- [ ] Agenda del día, filtros y métricas.
-- [ ] Acciones: atender, ausencia, cancelar con motivo.
-- [ ] Bloqueos de agenda y desbloqueo de clientes.
-- [ ] Tests de panel y permisos.
+- [x] Agenda del día, filtros y métricas.
+- [x] Acciones: atender, ausencia, cancelar con motivo.
+- [x] Bloqueos de agenda y desbloqueo de clientes.
+- [x] Tests de panel y permisos.
 - Commit: `T12: panel de administración`
 
 ## T13 — Pruebas de punta a punta
 
-- [ ] Playwright con backend y frontend reales.
-- [ ] Flujos: registro, reserva, cancelación, reprogramación y admin.
-- [ ] Al menos 44 comprobaciones E2E.
-- [ ] Corrección de defectos encontrados.
+- [x] Playwright con backend y frontend reales.
+- [x] Flujos: registro, reserva, cancelación, reprogramación y admin.
+- [x] Al menos 44 comprobaciones E2E.
+- [x] Corrección de defectos encontrados.
 - Commit: `T13: pruebas E2E en navegador real`
 
 ## T14 — Informe de pruebas y manuales
 
-- [ ] `docs/informe-de-pruebas.md` con matriz RN → test → resultado.
-- [ ] `docs/relevamiento.md`.
-- [ ] `docs/manual-de-usuario.md` y `docs/manual-tecnico.md`.
-- [ ] `docs/guia-de-despliegue.md`.
+- [x] `docs/informe-de-pruebas.md` con matriz RN → test → resultado.
+- [x] `docs/relevamiento.md`.
+- [x] `docs/manual-de-usuario.md` y `docs/manual-tecnico.md`.
+- [x] `docs/guia-de-despliegue.md`.
 - Commit: `T14: informe de pruebas y manuales`
 
 ## T15 — Despliegue, README y auditoría final
 
-- [ ] Configuración Netlify, Render y Neon.
-- [ ] README con problema, arquitectura, stack, enlaces y cómo correr.
-- [ ] Revisión de secretos, historial, tests y checklist.
-- [ ] Enlaces públicos y verificación final.
+- [x] Configuración Netlify, Render y Neon documentada.
+- [x] README con problema, arquitectura, stack, enlaces y cómo correr.
+- [x] Revisión de secretos, historial, tests y checklist.
+- [ ] Enlaces públicos y verificación final (requiere cuentas de despliegue del propietario).
 - Commit: `T15: despliegue, README y auditoría final`

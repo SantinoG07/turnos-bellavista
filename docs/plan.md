@@ -75,15 +75,15 @@ Variables: ver `.env.example`. Ningún secreto se versiona.
 
 ## 6. Definition of Done
 
-- [ ] `npm run typecheck` sin errores.
-- [ ] `npm test` verde (backend y frontend).
-- [ ] `npm run test:e2e` verde.
-- [ ] Las 34 reglas con test y fila en la matriz.
-- [ ] `npm run build` genera ambos artefactos.
-- [ ] Sin secretos: solo `.env.example`; `git grep` no encuentra claves.
-- [ ] README con enlaces públicos y guía de despliegue.
-- [ ] Un commit por tarea, tareas tildadas.
-- [ ] Deploy verificado de punta a punta con un turno real de prueba.
+- [x] `npm run typecheck` sin errores.
+- [x] `npm test` verde (backend y frontend).
+- [x] `npm run test:e2e` verde.
+- [x] Las 34 reglas con test y fila en la matriz.
+- [x] `npm run build` genera ambos artefactos.
+- [x] Sin secretos: solo `.env.example`; `git grep` no encuentra claves.
+- [ ] README con enlaces públicos y guía de despliegue (guía lista; faltan URLs de cuentas externas).
+- [x] Un commit por tarea, tareas tildadas.
+- [ ] Deploy verificado de punta a punta con un turno real de prueba (requiere cuentas externas).
 
 ## 7. Cronograma sugerido
 
