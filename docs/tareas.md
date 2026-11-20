@@ -32,11 +32,11 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T04 — Autenticación y seguridad
 
-- [ ] Registro y login con scrypt, JWT de 7 días y validaciones RN-01/02/03/04.
-- [ ] Middleware de autenticación y autorización RN-05/08.
-- [ ] Rate limit de login RN-06.
-- [ ] Bloqueo de clientes RN-07.
-- [ ] Tests de auth, token, roles y rate limit.
+- [x] Registro y login con scrypt, JWT de 7 días y validaciones RN-01/02/03/04.
+- [x] Middleware de autenticación y autorización RN-05/08.
+- [x] Rate limit de login RN-06.
+- [x] Bloqueo de clientes RN-07.
+- [x] Tests de auth, token, roles y rate limit.
 - Commit: `T04: autenticación scrypt, JWT y rate limit`
 
 ## T05 — Catálogo y disponibilidad

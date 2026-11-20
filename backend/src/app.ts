@@ -5,6 +5,7 @@ import { ZodError } from 'zod';
 import type { Database } from './db/types.js';
 import { AppError, badRequest } from './domain/errors.js';
 import { flattenZod } from './http/validation.js';
+import { createApiRouter } from './http/routes/index.js';
 
 export interface AppDependencies {
   db: Database;
@@ -54,6 +55,8 @@ export function createApp(deps: AppDependencies): Express {
       next(error);
     }
   });
+
+  app.use('/api', createApiRouter(deps));
 
   app.use('/api', (_req, _res, next) => {
     next(new AppError(404, 'NOT_FOUND', 'Endpoint no encontrado.'));

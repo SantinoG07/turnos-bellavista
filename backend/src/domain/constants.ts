@@ -24,3 +24,4 @@ export const APPOINTMENT_STATUSES = [
 ] as const;
 
 export type AppointmentStatus = (typeof APPOINTMENT_STATUSES)[number];
+export type UserRole = 'client' | 'admin';
