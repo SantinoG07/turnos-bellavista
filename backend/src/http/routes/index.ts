@@ -6,8 +6,10 @@ import { CatalogService } from '../../services/catalog.service.js';
 import { AppointmentService } from '../../services/appointment.service.js';
 import { CatalogRepository } from '../../repositories/catalog.repository.js';
 import { AppointmentRepository } from '../../repositories/appointment.repository.js';
+import { AdminRepository } from '../../repositories/admin.repository.js';
 import { UserRepository } from '../../repositories/user.repository.js';
 import { AuthService } from '../../services/auth.service.js';
+import { AdminService } from '../../services/admin.service.js';
 import { createAuthRouter } from './auth.routes.js';
 import { createCatalogRouter } from './catalog.routes.js';
 import { createAppointmentsRouter } from './appointments.routes.js';
@@ -20,6 +22,7 @@ export function createApiRouter(deps: AppDependencies): Router {
   const users = new UserRepository(deps.db);
   const catalog = new CatalogRepository(deps.db);
   const appointments = new AppointmentRepository(deps.db);
+  const admin = new AdminRepository(deps.db);
   const authService = new AuthService(users, jwtSecret, now);
   const catalogService = new CatalogService(catalog);
   const availabilityService = new AvailabilityService(catalog, catalogService, now);
@@ -31,6 +34,7 @@ export function createApiRouter(deps: AppDependencies): Router {
     authService,
     now,
   );
+  const adminService = new AdminService(deps.db, admin, appointments, catalog, now);
 
   router.use(
     '/auth',
@@ -63,6 +67,7 @@ export function createApiRouter(deps: AppDependencies): Router {
     '/admin',
     createAdminRouter({
       appointmentService,
+      adminService,
       users,
       jwtSecret,
     }),

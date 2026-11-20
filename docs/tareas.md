@@ -66,10 +66,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T08 — API de administración
 
-- [ ] Agenda por fecha/estado y métricas.
-- [ ] Clientes, desbloqueo y bloqueos de agenda.
-- [ ] Autorización admin en todos los endpoints.
-- [ ] Tests de administración y aislamiento.
+- [x] Agenda por fecha/estado y métricas.
+- [x] Clientes, desbloqueo y bloqueos de agenda.
+- [x] Autorización admin en todos los endpoints.
+- [x] Tests de administración y aislamiento.
 - Commit: `T08: API de administración y agenda`
 
 ## T09 — Frontend base y autenticación
