@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service.js';
 import { createAuthRouter } from './auth.routes.js';
 import { createCatalogRouter } from './catalog.routes.js';
 import { createAppointmentsRouter } from './appointments.routes.js';
+import { createAdminRouter } from './admin.routes.js';
 
 export function createApiRouter(deps: AppDependencies): Router {
   const router = Router();
@@ -52,6 +53,15 @@ export function createApiRouter(deps: AppDependencies): Router {
   router.use(
     '/appointments',
     createAppointmentsRouter({
+      appointmentService,
+      users,
+      jwtSecret,
+    }),
+  );
+
+  router.use(
+    '/admin',
+    createAdminRouter({
       appointmentService,
       users,
       jwtSecret,

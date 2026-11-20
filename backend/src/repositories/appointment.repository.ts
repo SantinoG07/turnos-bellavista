@@ -35,7 +35,7 @@ export class AppointmentRepository {
       `${detailedSelect}
        WHERE a.client_id = $1 ${filter}
        ORDER BY a.starts_at ${scope === 'past' ? 'DESC' : 'ASC'}`,
-      [clientId, now],
+      scope === 'all' ? [clientId] : [clientId, now],
     );
     return result.rows;
   }
@@ -157,6 +157,68 @@ export class AppointmentRepository {
       `INSERT INTO appointment_events (appointment_id, type, actor_id, metadata)
        VALUES ($1, $2, $3, $4::jsonb)`,
       [appointmentId, type, actorId, JSON.stringify(metadata)],
+    );
+  }
+
+  async lockAppointment(id: string): Promise<void> {
+    await this.db.query('SELECT id FROM appointments WHERE id = $1 FOR UPDATE', [id]);
+  }
+
+  async cancelAppointment(
+    id: string,
+    input: { cancelledBy: string; reason: string | null; now: Date },
+  ): Promise<AppointmentRow> {
+    const result = await this.db.query<AppointmentRow>(
+      `UPDATE appointments
+       SET status = 'cancelled', cancelled_at = $2, cancelled_by = $3,
+           cancellation_reason = $4, updated_at = $2
+       WHERE id = $1
+       RETURNING *`,
+      [id, input.now, input.cancelledBy, input.reason],
+    );
+    return result.rows[0]!;
+  }
+
+  async rescheduleAppointment(
+    id: string,
+    startsAt: Date,
+    endsAt: Date,
+    now: Date,
+  ): Promise<AppointmentRow> {
+    const result = await this.db.query<AppointmentRow>(
+      `UPDATE appointments
+       SET starts_at = $2, ends_at = $3,
+           reschedule_count = reschedule_count + 1, updated_at = $4
+       WHERE id = $1
+       RETURNING *`,
+      [id, startsAt, endsAt, now],
+    );
+    return result.rows[0]!;
+  }
+
+  async setStatus(id: string, status: AppointmentStatus): Promise<AppointmentRow> {
+    const result = await this.db.query<AppointmentRow>(
+      `UPDATE appointments SET status = $2, updated_at = now() WHERE id = $1 RETURNING *`,
+      [id, status],
+    );
+    return result.rows[0]!;
+  }
+
+  async countNoShowsSince(clientId: string, since: Date): Promise<number> {
+    const result = await this.db.query<{ count: string }>(
+      `SELECT count(*) FROM appointments
+       WHERE client_id = $1 AND status = 'no_show' AND starts_at >= $2`,
+      [clientId, since],
+    );
+    return Number(result.rows[0]?.count ?? 0);
+  }
+
+  async blockClient(clientId: string, blockedUntil: Date): Promise<void> {
+    await this.db.query(
+      `UPDATE users
+       SET blocked_until = GREATEST(COALESCE(blocked_until, $2), $2)
+       WHERE id = $1`,
+      [clientId, blockedUntil],
     );
   }
 }

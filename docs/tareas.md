@@ -57,11 +57,11 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T07 — Cancelación, reprogramación y ausencias
 
-- [ ] Cancelación de cliente y admin RN-23/24/25/26.
-- [ ] Reprogramación con revalidación y límite RN-27/28.
-- [ ] Atendido, ausencia, penalización y estados terminales RN-29 a RN-32.
-- [ ] Historial de eventos del turno.
-- [ ] Tests de plazos, carreras de estado y bloqueo por ausencias.
+- [x] Cancelación de cliente y admin RN-23/24/25/26.
+- [x] Reprogramación con revalidación y límite RN-27/28.
+- [x] Atendido, ausencia, penalización y estados terminales RN-29 a RN-32.
+- [x] Historial de eventos del turno.
+- [x] Tests de plazos, carreras de estado y bloqueo por ausencias.
 - Commit: `T07: ciclo de vida del turno y penalizaciones`
 
 ## T08 — API de administración
