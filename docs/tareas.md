@@ -49,10 +49,10 @@ Se tilda una tarea solo cuando su código, sus tests y su documentación están 
 
 ## T06 — Reserva de turnos
 
-- [ ] Servicio transaccional de creación RN-16/17/22/33.
-- [ ] Snapshot de precio RN-12.
-- [ ] Prevención de dobles reservas concurrentes.
-- [ ] Endpoint `POST /appointments` y tests de todas las reglas de reserva.
+- [x] Servicio transaccional de creación RN-16/17/22/33.
+- [x] Snapshot de precio RN-12.
+- [x] Prevención de dobles reservas concurrentes.
+- [x] Endpoint `POST /appointments` y tests de todas las reglas de reserva.
 - Commit: `T06: reserva de turnos con reglas y transacción`
 
 ## T07 — Cancelación, reprogramación y ausencias
