@@ -2,8 +2,12 @@ import { config as loadDotenv } from 'dotenv';
 import { resolve } from 'node:path';
 
 // Permite ejecutar desde backend/ (npm workspace) o desde la raíz.
+// Neon CLI escribe la conexión local en .env.local; tiene prioridad sobre .env
+// y ambos archivos permanecen ignorados por Git.
 loadDotenv({ path: resolve(process.cwd(), '.env'), quiet: true });
 loadDotenv({ path: resolve(process.cwd(), '..', '.env'), quiet: true });
+loadDotenv({ path: resolve(process.cwd(), '.env.local'), override: true, quiet: true });
+loadDotenv({ path: resolve(process.cwd(), '..', '.env.local'), override: true, quiet: true });
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
