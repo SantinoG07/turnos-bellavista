@@ -2,114 +2,207 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdminPage } from './AdminPage';
-import { api } from '../lib/api';
+import { api, ApiError } from '../lib/api';
 import { adminUser, makeAuth, renderWithAuth } from '../test/render';
-import type { Appointment, Client, Professional } from '../types';
+import type { Appointment, Client, Metrics, Professional, Service, TimeOff } from '../types';
+
+const now = Date.now();
+const hoursFromNow = (hours: number) => new Date(now + hours * 3_600_000).toISOString();
+
+const services: Service[] = [
+  {
+    id: 's1',
+    name: 'Corte clásico',
+    description: 'Corte con lavado.',
+    durationMin: 30,
+    priceCents: 1_200_000,
+  },
+];
+
+const professionals: Professional[] = [
+  { id: 'p1', name: 'Nico', bio: 'Clásicos', serviceIds: ['s1'] },
+];
 
 const appointment: Appointment = {
-  id: 'a0000000-0000-4000-8000-000000000001',
-  startsAt: '2026-11-20T14:00:00.000Z',
-  endsAt: '2026-11-20T14:30:00.000Z',
+  id: 'a1',
+  startsAt: hoursFromNow(-1),
+  endsAt: hoursFromNow(-0.5),
   status: 'confirmed',
-  priceCents: 1200000,
+  priceCents: 1_200_000,
   rescheduleCount: 0,
   notes: 'Máquina 2',
   cancellationReason: null,
   cancelledAt: null,
-  service: { id: 's0000000-0000-4000-8000-000000000001', name: 'Corte clásico', durationMin: 30 },
-  professional: { id: 'p0000000-0000-4000-8000-000000000001', name: 'Nico' },
-  client: { id: 'c0000000-0000-4000-8000-000000000001', name: 'Cliente Demo', email: 'cliente@test.com', phone: null },
+  service: { id: 's1', name: 'Corte clásico', durationMin: 30 },
+  professional: { id: 'p1', name: 'Nico' },
+  client: { id: 'c1', name: 'Cliente Demo', email: 'cliente@bellavista.test', phone: null },
 };
 
 const client: Client = {
-  id: appointment.client!.id,
-  email: appointment.client!.email,
-  fullName: appointment.client!.name,
+  id: 'c1',
+  email: 'cliente@bellavista.test',
+  fullName: 'Cliente Demo',
   phone: null,
-  blockedUntil: '2026-12-01T00:00:00.000Z',
-  noShowCount: 2,
-  upcomingCount: 0,
-  createdAt: '2026-01-01T00:00:00.000Z',
+  blockedUntil: new Date(now + 86_400_000).toISOString(),
+  noShowCount: 3,
+  upcomingCount: 1,
+  createdAt: new Date(now - 86_400_000).toISOString(),
 };
 
-const professional: Professional = {
-  id: appointment.professional.id,
-  name: 'Nico',
-  bio: 'Barbero',
-  serviceIds: [appointment.service.id],
+const metrics: Metrics = {
+  date: '2026-11-20',
+  total: 6,
+  confirmed: 2,
+  cancelled: 1,
+  completed: 2,
+  noShow: 1,
+  upcoming7Days: 4,
 };
+
+const timeOff: TimeOff = {
+  id: 't1',
+  professionalId: 'p1',
+  professionalName: 'Nico',
+  startsAt: hoursFromNow(24),
+  endsAt: hoursFromNow(25),
+  reason: 'Trámite',
+};
+
+function mockApis() {
+  vi.spyOn(api.admin, 'appointments').mockResolvedValue({ appointments: [appointment] });
+  vi.spyOn(api.admin, 'metrics').mockResolvedValue({ metrics });
+  vi.spyOn(api.admin, 'timeOff').mockResolvedValue({ timeOff: [timeOff] });
+  vi.spyOn(api.admin, 'clients').mockResolvedValue({ clients: [client] });
+  vi.spyOn(api.admin, 'complete').mockResolvedValue({ appointment });
+  vi.spyOn(api.admin, 'noShow').mockResolvedValue({ appointment });
+  vi.spyOn(api.admin, 'cancel').mockResolvedValue({ appointment });
+  vi.spyOn(api.admin, 'unblock').mockResolvedValue({ ok: true });
+  vi.spyOn(api.admin, 'createTimeOff').mockResolvedValue({ timeOff });
+  vi.spyOn(api.admin, 'deleteTimeOff').mockResolvedValue(undefined);
+  vi.spyOn(api.catalog, 'services').mockResolvedValue({ services });
+  vi.spyOn(api.catalog, 'professionals').mockResolvedValue({ professionals });
+}
 
 describe('T12 · panel de administración', () => {
   beforeEach(() => {
-    vi.spyOn(api.admin, 'appointments').mockResolvedValue({ appointments: [appointment] });
-    vi.spyOn(api.admin, 'metrics').mockResolvedValue({ metrics: { date: '2026-11-20', total: 1, confirmed: 1, completed: 0, noShow: 0, cancelled: 0, upcoming7Days: 1 } });
-    vi.spyOn(api.admin, 'timeOff').mockResolvedValue({ timeOff: [] });
-    vi.spyOn(api.admin, 'clients').mockResolvedValue({ clients: [client] });
-    vi.spyOn(api.catalog, 'services').mockResolvedValue({ services: [{ id: appointment.service.id, name: 'Corte clásico', description: '', durationMin: 30, priceCents: 1200000 }] });
-    vi.spyOn(api.catalog, 'professionals').mockResolvedValue({ professionals: [professional] });
-    vi.spyOn(api.admin, 'complete').mockResolvedValue({ appointment: { ...appointment, status: 'completed' } });
-    vi.spyOn(api.admin, 'noShow').mockResolvedValue({ appointment: { ...appointment, status: 'no_show' } });
-    vi.spyOn(api.admin, 'cancel').mockResolvedValue({ appointment: { ...appointment, status: 'cancelled' } });
-    vi.spyOn(api.admin, 'unblock').mockResolvedValue({ ok: true });
-    vi.spyOn(api.admin, 'createTimeOff').mockResolvedValue({ timeOff: { id: 't1', professionalId: professional.id, professionalName: 'Nico', startsAt: '2026-11-20T14:00:00.000Z', endsAt: '2026-11-20T15:00:00.000Z', reason: 'Capacitación' } });
-    vi.spyOn(api.admin, 'deleteTimeOff').mockResolvedValue(undefined);
+    mockApis();
   });
 
   afterEach(() => vi.restoreAllMocks());
 
-  function renderPage() {
-    return renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
-  }
-
-  it('muestra agenda, métricas y filtros', async () => {
-    renderPage();
-    expect(await screen.findByText('Corte clásico')).toBeInTheDocument();
-    expect(screen.getByLabelText('Métricas del día')).toHaveTextContent('Confirmados');
-    expect(api.admin.appointments).toHaveBeenCalledWith(expect.any(String), undefined);
+  it('muestra las métricas del día', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    const grid = await screen.findByLabelText('Métricas del día');
+    expect(within(grid).getByText('Turnos').parentElement).toHaveTextContent('6');
+    expect(within(grid).getByText('Próximos 7 días').parentElement).toHaveTextContent('4');
   });
 
-  it('filtra la agenda por estado', async () => {
-    const user = userEvent.setup();
-    renderPage();
+  it('lista la agenda con cliente, servicio y precio', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    expect(await screen.findByText('Corte clásico')).toBeInTheDocument();
+    expect(screen.getAllByText(/Cliente Demo/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/12\.000/)).toBeInTheDocument();
+  });
+
+  it('filtra por fecha y estado', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
     await screen.findByText('Corte clásico');
-    await user.selectOptions(screen.getByLabelText('Estado'), 'cancelled');
-    await waitFor(() => expect(api.admin.appointments).toHaveBeenLastCalledWith(expect.any(String), 'cancelled'));
+    await userEvent.selectOptions(screen.getByLabelText('Estado'), 'no_show');
+    await waitFor(() =>
+      expect(api.admin.appointments).toHaveBeenLastCalledWith(expect.any(String), 'no_show'),
+    );
   });
 
   it('marca un turno como atendido', async () => {
-    const user = userEvent.setup();
-    renderPage();
-    await user.click(await screen.findByRole('button', { name: 'Atender' }));
-    await waitFor(() => expect(api.admin.complete).toHaveBeenCalledWith(appointment.id));
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await userEvent.click(await screen.findByRole('button', { name: 'Atender' }));
+    await waitFor(() => expect(api.admin.complete).toHaveBeenCalledWith('a1'));
     expect(await screen.findByText('Turno marcado como atendido.')).toBeInTheDocument();
   });
 
-  it('cancela con un motivo obligatorio', async () => {
-    const user = userEvent.setup();
-    renderPage();
-    await user.click(await screen.findByRole('button', { name: 'Cancelar' }));
-    const dialog = screen.getByRole('dialog');
-    await user.type(within(dialog).getByLabelText('Motivo'), 'El local cerrará temprano');
-    await user.click(within(dialog).getByRole('button', { name: 'Cancelar turno' }));
-    await waitFor(() => expect(api.admin.cancel).toHaveBeenCalledWith(appointment.id, 'El local cerrará temprano'));
+  it('registra una ausencia', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await userEvent.click(await screen.findByRole('button', { name: 'Ausencia' }));
+    await waitFor(() => expect(api.admin.noShow).toHaveBeenCalledWith('a1'));
+    expect(await screen.findByText('Ausencia registrada.')).toBeInTheDocument();
   });
 
-  it('desbloquea clientes bloqueados', async () => {
-    const user = userEvent.setup();
-    renderPage();
-    await user.click(await screen.findByRole('button', { name: 'Desbloquear' }));
-    await waitFor(() => expect(api.admin.unblock).toHaveBeenCalledWith(client.id));
+  it('cancela con motivo obligatorio', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancelar' }));
+    const dialog = within(screen.getByRole('dialog'));
+    const confirm = dialog.getByRole('button', { name: 'Cancelar turno' });
+    expect(confirm).toBeDisabled();
+    await userEvent.type(dialog.getByLabelText('Motivo'), 'El barbero se enfermó');
+    await userEvent.click(confirm);
+    await waitFor(() =>
+      expect(api.admin.cancel).toHaveBeenCalledWith('a1', 'El barbero se enfermó'),
+    );
+  });
+
+  it('desbloquea un cliente con ausencias', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await userEvent.click(await screen.findByRole('button', { name: 'Desbloquear' }));
+    await waitFor(() => expect(api.admin.unblock).toHaveBeenCalledWith('c1'));
+    expect(await screen.findByText('Cliente desbloqueado.')).toBeInTheDocument();
+  });
+
+  it('busca clientes por texto', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await screen.findByText('Cliente Demo');
+    await userEvent.type(screen.getByLabelText('Buscar por nombre o email'), 'demo');
+    await waitFor(() => expect(api.admin.clients).toHaveBeenLastCalledWith('demo'));
   });
 
   it('crea un bloqueo de agenda', async () => {
-    const user = userEvent.setup();
-    renderPage();
-    await screen.findByText('Bloqueos de agenda');
-    await user.selectOptions(screen.getByLabelText('Profesional'), professional.id);
-    await user.type(screen.getByLabelText('Desde'), '2026-11-25T10:00');
-    await user.type(screen.getByLabelText('Hasta'), '2026-11-25T11:00');
-    await user.type(screen.getByLabelText('Motivo'), 'Capacitación');
-    await user.click(screen.getByRole('button', { name: 'Crear bloqueo' }));
-    await waitFor(() => expect(api.admin.createTimeOff).toHaveBeenCalled());
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await screen.findByRole('option', { name: 'Nico' });
+    await userEvent.selectOptions(screen.getByLabelText('Profesional'), 'p1');
+    await userEvent.type(screen.getByLabelText('Desde'), '2026-12-01T10:00');
+    await userEvent.type(screen.getByLabelText('Hasta'), '2026-12-01T12:00');
+    await userEvent.type(screen.getByLabelText('Motivo'), 'Congreso');
+    await userEvent.click(screen.getByRole('button', { name: 'Crear bloqueo' }));
+    await waitFor(() =>
+      expect(api.admin.createTimeOff).toHaveBeenCalledWith({
+        professionalId: 'p1',
+        startsAt: '2026-12-01T13:00:00.000Z',
+        endsAt: '2026-12-01T15:00:00.000Z',
+        reason: 'Congreso',
+      }),
+    );
+    expect(await screen.findByText('Bloqueo de agenda creado.')).toBeInTheDocument();
+  });
+
+  it('elimina un bloqueo existente', async () => {
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await userEvent.click(await screen.findByRole('button', { name: 'Quitar' }));
+    await waitFor(() => expect(api.admin.deleteTimeOff).toHaveBeenCalledWith('t1'));
+    expect(await screen.findByText('Bloqueo eliminado.')).toBeInTheDocument();
+  });
+
+  it('muestra el error del backend al crear un bloqueo en conflicto', async () => {
+    vi.mocked(api.admin.createTimeOff).mockRejectedValue(
+      new ApiError(409, 'CONFLICT', 'El bloqueo se superpone con turnos confirmados.'),
+    );
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    await screen.findByRole('option', { name: 'Nico' });
+    await userEvent.selectOptions(screen.getByLabelText('Profesional'), 'p1');
+    await userEvent.type(screen.getByLabelText('Desde'), '2026-12-01T10:00');
+    await userEvent.type(screen.getByLabelText('Hasta'), '2026-12-01T12:00');
+    await userEvent.type(screen.getByLabelText('Motivo'), 'Cierre');
+    await userEvent.click(screen.getByRole('button', { name: 'Crear bloqueo' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('se superpone');
+  });
+
+  it('muestra un estado vacío si la agenda no tiene turnos', async () => {
+    vi.mocked(api.admin.appointments).mockResolvedValue({ appointments: [] });
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    expect(await screen.findByText('Sin turnos')).toBeInTheDocument();
+  });
+
+  it('informa si falla la carga de la agenda', async () => {
+    vi.mocked(api.admin.metrics).mockRejectedValue(new Error('red'));
+    renderWithAuth(<AdminPage />, { auth: makeAuth({ user: adminUser }) });
+    expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos cargar la agenda');
   });
 });
