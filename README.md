@@ -4,7 +4,21 @@ Aplicación web de reservas para una barbería de Buenos Aires, creada como proy
 
 ## Estado de entrega
 
-La aplicación, sus migraciones, documentación y pruebas están incluidas en este repositorio. La configuración para Netlify, Render y Neon está lista. Las URLs públicas no se publican hasta que el dueño conecte sus cuentas y cargue sus variables; ver [guía de despliegue](docs/guia-de-despliegue.md).
+La aplicación, sus migraciones, documentación y pruebas están incluidas en este repositorio. La base
+Neon `turnos-bellavista` está creada, migrada y con datos demo. La configuración para Netlify,
+Render y Neon está lista en `netlify.toml`, `render.yaml` y la guía de despliegue.
+
+**Pendiente para publicar:** conectar el repositorio a las cuentas de GitHub, Render y Netlify del
+propietario y cargar las variables indicadas. Este entorno de desarrollo no tiene credenciales de
+esos proveedores, por lo que no se inventan URLs ni se publican secretos. Ver
+[guía de despliegue](docs/guia-de-despliegue.md).
+
+## Cuentas demo (solo desarrollo)
+
+- Cliente: `cliente@bellavista.test` / `Cliente1234`
+- Administración: `admin@bellavista.test` / `Admin1234`
+
+No usar estas credenciales en producción.
 
 ## Reglas de negocio destacadas
 
