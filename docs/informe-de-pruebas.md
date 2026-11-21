@@ -1,16 +1,16 @@
 # Informe de pruebas
 
-Ejecución local de cierre: Node 22.22.1. Las pruebas unitarias/integración se ejecutan con PGlite aislado y las de interfaz con jsdom. El E2E usa Chromium, Vite y Express reales.
+Ejecución local de cierre: Node 22.22.1. Las pruebas unitarias/integración se ejecutan con PGlite aislado y las de interfaz con jsdom. El E2E usa Firefox (Playwright), Vite y Express reales sobre PGlite.
 
 ## Resultado
 
 | Capa | Comando | Resultado |
 | --- | --- | --- |
 | Backend | `npm run test -w backend` | 86 tests aprobados |
-| Frontend | `npm run test -w frontend` | 81 tests aprobados |
+| Frontend | `npm run test -w frontend` | 88 tests aprobados |
 | Tipos | `npm run typecheck` | aprobado |
 | Build | `npm run build` | aprobado |
-| E2E | `npm run test:e2e` | 3 flujos; 44 comprobaciones de navegador definidas |
+| E2E | `npm run test:e2e` | 4 flujos; 44 comprobaciones de navegador aprobadas |
 
 Los avisos de React `act(...)` de `HomePage.test.tsx` no hacen fallar la suite; son deuda de limpieza a corregir antes de una futura ampliación.
 

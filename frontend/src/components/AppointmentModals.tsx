@@ -101,7 +101,7 @@ export function CancelModal({ appointment, onClose, onDone }: ModalBaseProps) {
 export function RescheduleModal({ appointment, onClose, onDone }: ModalBaseProps) {
   const today = dateInputValue();
   const maxDate = addDaysToInput(today, 60);
-  const [date, setDate] = useState(today);
+  const [date, setDate] = useState(dateInputValue(new Date(appointment.startsAt)));
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selected, setSelected] = useState<Slot | null>(null);
   const [loading, setLoading] = useState(true);

@@ -21,6 +21,8 @@ test-results/
 *.sqlite
 *.db
 .pgdata/
+.e2e-pgdata/
+backend/.e2e-pgdata/
 data/
 
 # Logs y temporales

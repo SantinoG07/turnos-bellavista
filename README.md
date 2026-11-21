@@ -50,7 +50,7 @@ npm run test:e2e
 npm run build
 ```
 
-Resultado de cierre: 86 pruebas backend, 81 frontend y 3 flujos Playwright con 44 comprobaciones de navegador. Ver [informe de pruebas](docs/informe-de-pruebas.md).
+Resultado de cierre: 86 pruebas backend, 88 frontend y 4 flujos Playwright con 44 comprobaciones de navegador. Ver [informe de pruebas](docs/informe-de-pruebas.md).
 
 ## Documentación
 

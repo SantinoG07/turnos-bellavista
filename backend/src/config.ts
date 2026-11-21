@@ -3,11 +3,28 @@ import { resolve } from 'node:path';
 
 // Permite ejecutar desde backend/ (npm workspace) o desde la raíz.
 // Neon CLI escribe la conexión local en .env.local; tiene prioridad sobre .env
-// y ambos archivos permanecen ignorados por Git.
+// y ambos archivos permanecen ignorados por Git. Las variables ya presentes en
+// el entorno (por ejemplo, en CI o en Playwright) siempre tienen prioridad.
+const explicitEnv = {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  DATABASE_URL: process.env.DATABASE_URL,
+  JWT_SECRET: process.env.JWT_SECRET,
+  CORS_ORIGIN: process.env.CORS_ORIGIN,
+  TZ: process.env.TZ,
+  SEED_ADMIN_EMAIL: process.env.SEED_ADMIN_EMAIL,
+  SEED_ADMIN_PASSWORD: process.env.SEED_ADMIN_PASSWORD,
+  SEED_ADMIN_NAME: process.env.SEED_ADMIN_NAME,
+};
+
 loadDotenv({ path: resolve(process.cwd(), '.env'), quiet: true });
 loadDotenv({ path: resolve(process.cwd(), '..', '.env'), quiet: true });
 loadDotenv({ path: resolve(process.cwd(), '.env.local'), override: true, quiet: true });
 loadDotenv({ path: resolve(process.cwd(), '..', '.env.local'), override: true, quiet: true });
+
+for (const [name, value] of Object.entries(explicitEnv)) {
+  if (value !== undefined && value !== '') process.env[name] = value;
+}
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';

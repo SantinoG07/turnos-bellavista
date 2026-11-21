@@ -1,13 +1,26 @@
 import { expect, test } from '@playwright/test';
 
-const suffix = () => `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
+const suffix = () =>
+  `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
+
+function nextTuesday(): string {
+  // Fecha YYYY-MM-DD del próximo martes en Buenos Aires (UTC-03:00).
+  const local = new Date(Date.now() - 3 * 3_600_000);
+  let add = (2 - local.getUTCDay() + 7) % 7;
+  if (add === 0) add = 7;
+  const date = new Date(
+    Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() + add),
+  );
+  return date.toISOString().slice(0, 10);
+}
+
 
 async function registerAndBook(page: import('@playwright/test').Page) {
   const email = `e2e-${suffix()}@bellavista.test`;
   await page.goto('/registro');
   await page.getByLabel('Nombre completo').fill('Cliente E2E');
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Contraseña').fill('Cliente1234');
+  await page.locator('input[name="password"]').fill('Cliente1234');
   await page.getByLabel('Repetir contraseña').fill('Cliente1234');
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
   await expect(page).toHaveURL(/mis-turnos/);
@@ -15,6 +28,7 @@ async function registerAndBook(page: import('@playwright/test').Page) {
   await page.getByRole('link', { name: 'Reservar turno' }).click();
   await page.getByRole('button', { name: /Corte clásico/ }).click();
   await page.getByRole('button', { name: 'Nico' }).click();
+  await page.getByLabel('Fecha').fill(nextTuesday());
   await expect(page.getByLabel('Horarios disponibles')).toBeVisible();
   await page.getByLabel('Horarios disponibles').getByRole('button').first().click();
   await page.getByLabel('Notas para el barbero (opcional)').fill('Prueba e2e');
@@ -43,7 +57,7 @@ test('reprograma una reserva a un nuevo horario', async ({ page }) => {
   await page.getByRole('button', { name: 'Reprogramar' }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByText(/Elegí otro horario/)).toBeVisible();
+  await expect(dialog.getByText(/Elegí un nuevo horario/)).toBeVisible();
   await dialog.getByRole('button').filter({ hasText: /^\d{2}:\d{2}$/ }).first().click();
   await expect(dialog.getByRole('button', { name: 'Confirmar nuevo horario' })).toBeEnabled();
   await dialog.getByRole('button', { name: 'Confirmar nuevo horario' }).click();
@@ -53,7 +67,7 @@ test('reprograma una reserva a un nuevo horario', async ({ page }) => {
 test('admin consulta agenda y crea un bloqueo', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Email').fill('admin@bellavista.test');
-  await page.getByLabel('Contraseña').fill('Admin1234');
+  await page.getByLabel('Contraseña', { exact: true }).fill('Admin1234');
   await page.getByRole('button', { name: 'Entrar' }).click();
   await page.getByRole('link', { name: 'Admin' }).click();
   await expect(page.getByRole('heading', { name: 'Agenda del local' })).toBeVisible();
@@ -84,9 +98,9 @@ test('la portada comunica servicios y reglas antes de iniciar sesión', async ({
   await expect(page.getByRole('link', { name: 'Ya tengo cuenta' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Elegí cómo querés salir.' })).toBeVisible();
   await expect(page.getByText('Corte clásico')).toBeVisible();
-  await expect(page.getByText('Corte + barba')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3, name: 'Corte + barba' })).toBeVisible();
   await expect(page.getByText('Afeitado tradicional')).toBeVisible();
-  await expect(page.getByText('Coloración')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3, name: 'Coloración' })).toBeVisible();
   await expect(page.getByText('Corte de cabello con lavado y peinado.')).toBeVisible();
   await expect(page.getByText('Coloración completa con tratamiento.')).toBeVisible();
   await expect(page.getByText('Precios finales. La duración la calcula el sistema al reservar.')).toBeVisible();
